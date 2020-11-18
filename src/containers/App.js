@@ -1,32 +1,21 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import classes from './App.css';
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
+import withClass from "../hoc/withClass";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        console.log('[App.js] constructor')
-    }
-
     state = {
         persons: [
             {id: 'asfa1', name: 'Max', age: 28},
             {id: 'asfdw', name: 'Manu', age: 29},
             {id: 'asf4d', name: 'Stephanie', age: 26}
         ],
-        showPersons: false
-    }
-
-    static getDerivedStateFromProps() {
-        console.log('[App.js] getDerivedState', props);
-        return state;
+        showPersons: false,
+        showCockpit: true
     }
 
     nameChangeHandler = (event, id) => {
-        console.log('works in App');
-        console.log(event.target.value);
-
         const personIndex = this.state.persons.findIndex(p => {
             return p.id === id;
         });
@@ -38,9 +27,9 @@ class App extends Component {
         person.name = event.target.value;
 
         const persons = [...this.state.persons];
-        person[personIndex] = person;
+        persons[personIndex] = person;
 
-        this.setState({ persons: persons })
+        this.setState({persons: persons})
     }
 
     deletePersonHandler = (personIndex) => {
@@ -59,26 +48,33 @@ class App extends Component {
 
         if (this.state.showPersons) {
             persons = (
-                    <Persons
-                        persons={this.state.persons}
-                        clicked={this.deletePersonHandler}
-                        changed={this.nameChangeHandler}
-                    />
+                <Persons
+                    persons={this.state.persons}
+                    clicked={this.deletePersonHandler}
+                    changed={this.nameChangeHandler}
+                />
             );
 
         }
 
         return (
-            <div className={classes.App}>
-                <Cockpit
-                    showPersons={this.state.showPersons}
-                    persons={this.state.persons}
-                    clicked={this.togglePersonHandler}
-                />
+            <Fragment>
+                <button onClick={() => {
+                    this.setState({showCockpit: !this.state.showCockpit})
+                }}>
+                    {this.state.showCockpit ? 'Remove' : 'Show'} Cockpit
+                </button>
+                {this.state.showCockpit ? (
+                    <Cockpit
+                        showPersons={this.state.showPersons}
+                        personsLengt={this.state.persons.length}
+                        clicked={this.togglePersonHandler}
+                    />
+                ) : null}
                 {persons}
-            </div>
+            </Fragment>
         );
     }
 }
 
-export default App;
+export default withClass(App, classes.App);
