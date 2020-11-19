@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useRef, useContext} from 'react';
 import classes from "./Cockpit.css";
+import AuthContext from '../../context/auth-contecxt';
 
 const Cockpit = (props) => {
+    const toggleBtnRef = useRef(null);
+    const authContext = useContext(AuthContext);
+
     useEffect(() => {
         console.log('[Cockpit.js] useEffect');
         const timer = setTimeout(() => {
@@ -29,7 +33,7 @@ const Cockpit = (props) => {
         btnClass = classes.Red;
     }
 
-    if (props.personsLengt <=2) {
+    if (props.personsLengt <= 2) {
         assignedClasses.push(classes.red);
     }
 
@@ -41,7 +45,8 @@ const Cockpit = (props) => {
         <div className={classes.Cockpit}>
             <h1>Hi, I'm React App</h1>
             <p className={assignedClasses.join(' ')}>This is really working!</p>
-            <button className={btnClass} onClick={props.clicked}>Toggle Persons</button>
+            <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>Toggle Persons</button>
+            <button onClick={authContext.login}>Log In</button>
         </div>
     );
 };
